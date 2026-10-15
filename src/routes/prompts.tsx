@@ -1,0 +1,6 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { ArrowRight, BookOpen } from 'lucide-react';
+import { tools } from '@/lib/fashion-tools';
+import { PageFooter } from '@/components/fashion/workspace-shell';
+export const Route=createFileRoute('/prompts')({head:()=>({meta:[{title:'Prompt Library | Dream Design Create Build'},{name:'description',content:'Purposeful fashion-business prompt examples with clear goals, context and output formats.'},{property:'og:title',content:'Fashion Business Prompt Library'},{property:'og:description',content:'Start with a thoughtful brief for stronger AI drafts.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:Prompts});
+function Prompts(){return <main className="page"><div className="page-intro"><div><h1>A thoughtful starting point</h1><p>Clear goals. Useful context. Beautiful possibilities.</p></div><BookOpen className="text-gold"/></div><div className="tool-grid">{tools.map(t=><article className="tool-card" key={t.id}><span className="category">{t.category}</span><h3>{t.title}</h3><p>{t.example}</p><Link to="/tools/$toolId" params={{toolId:t.id}} className="flex gap-2 items-center text-xs">Open tool<ArrowRight size={13}/></Link></article>)}</div><PageFooter/></main>}

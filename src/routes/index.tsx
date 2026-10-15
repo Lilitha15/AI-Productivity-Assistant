@@ -1,24 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { Sparkles, ArrowRight, Clock3, CheckCheck, FolderHeart, CalendarDays, Plus, ArrowUpRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useWorkspace } from '@/components/fashion/workspace-context';
+import { PageFooter } from '@/components/fashion/workspace-shell';
+import { ToolCard } from '@/components/fashion/tool-card';
+import { tools } from '@/lib/fashion-tools';
+import studio from '@/assets/fashion-studio.jpg';
+export const Route = createFileRoute('/')({ head:()=>({ meta:[{title:'My Workspace | Dream Design Create Build'},{name:'description',content:'Your fashion-business creative workspace with AI drafting, collection inspiration and task planning.'},{property:'og:title',content:'Dream Design Create Build — Fashion Business AI Assistant'},{property:'og:description',content:'Dream. Design. Create. Build. Your creative fashion business workspace.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}), component: Index });
+function Index() { const { drafts,tasks,setTasks } = useWorkspace(); const stats = [{label:'Estimated time saved',value:`${Math.round(drafts.reduce((a,d)=>a+d.savedMinutes,0))} min`,note:'Based on manual-task estimates',icon:Clock3},{label:'AI creations',value:drafts.length,note:'Created in this session',icon:Sparkles},{label:'Tasks completed',value:`${tasks.filter(t=>t.done).length} / ${tasks.length}`,note:'A little progress, every day',icon:CheckCheck},{label:'Saved creations',value:drafts.length,note:'Your ideas, all in one place',icon:FolderHeart}];
+ return <main className="page"><div className="page-intro"><div className="min-w-0"><h1>Welcome to your creative workspace.</h1><p>Let’s make more time for what you love — designing.</p></div><span className="date-label flex gap-2 items-center text-[11px] text-muted-foreground"><CalendarDays size={14}/>Your next chapter starts here</span></div><section className="studio-hero"><img src={studio} alt="Fashion designer sketching beside a draped mannequin, fabric swatches and a clothing rail in her atelier" width={1536} height={768}/><div className="hero-copy"><div className="eyebrow"><span className="w-5 h-px bg-primary-foreground"/>YOUR VISION. A LITTLE AI MAGIC.</div><h2>Dream. Design.<br/>Create. Build.</h2><p>Your creative partner for the business behind the fashion. Less busywork. More beautiful possibilities.</p><Button asChild className="hero-button h-10 px-5 text-xs"><Link to="/tools"><Sparkles size={14}/>Explore your AI tools<ArrowRight size={14}/></Link></Button></div><span className="hero-signature">Where creativity meets possibility.</span></section><div className="stat-grid">{stats.map(s=><div key={s.label} className="stat"><span className="stat-icon"><s.icon strokeWidth={1.5}/></span><div className="min-w-0"><div className="stat-label">{s.label}</div><div className="stat-value">{s.value}</div><div className="stat-note">{s.note}</div></div></div>)}</div><section><div className="section-heading"><div><h2>A little help for every part of your business.</h2><p>Thoughtfully crafted tools, made for your fashion journey.</p></div><Link to="/tools" className="text-[11px] flex items-center gap-2 shrink-0">All tools<ArrowRight size={13}/></Link></div><div className="tool-grid">{tools.map(tool=><ToolCard key={tool.id} tool={tool}/>)}</div></section><div className="lower-grid"><section><div className="section-heading"><div><h2>On your studio agenda</h2><p>Sample tasks · make them your own in the planner.</p></div><Button variant="ghost" size="icon" asChild><Link to="/planner" aria-label="Add task"><Plus/></Link></Button></div>{tasks.slice(0,3).map(task=><label key={task.id} className="task-row"><input type="checkbox" checked={task.done} onChange={()=>setTasks(prev=>prev.map(t=>t.id===task.id?{...t,done:!t.done}:t))}/><span className={task.done?'task-done':''}>{task.title}</span><span className="category">{task.priority}</span></label>)}<Link to="/planner" className="mt-4 text-[10px] inline-flex gap-2 items-center">View my planner<ArrowRight size={12}/></Link></section><section className="inspiration"><div className="eyebrow flex gap-2 items-center text-gold"><Sparkles size={13}/>A MOMENT OF INSPIRATION</div><h3>Every collection begins with a possibility.</h3><p>Explore textures, unexpected silhouettes, and a colour story that feels uniquely yours.</p><Link to="/tools/$toolId" params={{toolId:'collection'}} className="text-xs flex gap-2 items-center mt-4">Find your next idea<ArrowUpRight size={14}/></Link></section></div><PageFooter/></main>; }
